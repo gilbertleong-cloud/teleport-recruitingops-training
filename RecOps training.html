@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teleport Recruiting Operations — Training Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Source Sans 3', 'Segoe UI', sans-serif; background: #F6F5F1; color: #1B2A4A; min-height: 100vh; }
+    #app { max-width: 780px; margin: 0 auto; padding: 32px 20px 60px; }
+
+    /* NAV BUTTONS */
+    .nav-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 8px; border: 1.5px solid #e0ddd6; background: white; color: #888; font-weight: 500; font-size: 12px; cursor: pointer; transition: all 0.15s ease; font-family: inherit; margin: 3px; }
+    .nav-btn:hover { border-color: #bbb; color: #444; }
+    .nav-btn.active { background: white; }
+
+    /* CARDS */
+    .section-card { background: white; border-radius: 14px; border: 1px solid #e5e5e5; padding: 28px; margin-top: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .section-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 15px; flex-shrink: 0; }
+    .pillar { padding: 16px 20px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .pillar:last-child { border-bottom: none; }
+    .pill { font-size: 10px; padding: 2px 8px; border-radius: 12px; font-weight: 500; }
+    .program-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; margin-bottom: 4px; font-size: 13px; }
+    .phase-row { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 12px; border-bottom: 1px solid #eee; margin-bottom: 12px; }
+    .phase-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .kpi-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #eee; }
+    .stakeholder-row { padding: 12px 14px; border-radius: 8px; margin-bottom: 4px; }
+    .check-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 12px; border-radius: 8px; margin-bottom: 4px; border: 1px solid #eee; cursor: pointer; transition: background 0.1s; }
+    .check-item:hover { background: #fafafa; }
+    .check-item.done { opacity: 0.5; }
+    .check-box { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid #ccc; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+    .check-item.done .check-box { background: #0F766E; border-color: #0F766E; color: white; }
+
+    /* PATH CARDS */
+    .path-card { border: 1.5px solid #e0ddd6; border-radius: 12px; padding: 20px 22px; background: white; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; margin-bottom: 12px; }
+    .path-card:hover { border-color: #bbb; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+
+    /* FOOTER */
+    .footer { margin-top: 28px; padding: 18px 22px; background: #f4f3ef; border-radius: 12px; font-size: 13px; color: #666; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    // ── SECTIONS REGISTRY ────────────────────────────────────────────────
+    var SECTIONS = [
+      { id:"why",          icon:"◆", title:"Why recruiting ops exists", color:"#1B2A4A" },
+      { id:"model",        icon:"▲", title:"Three-pillar model",        color:"#1B8C5A" },
+      { id:"programs",     icon:"●", title:"10 programs",               color:"#7C3AED" },
+      { id:"roadmap",      icon:"→", title:"FY27 roadmap",              color:"#B45309" },
+      { id:"kpis",         icon:"◇", title:"How you're measured",       color:"#0F766E" },
+      { id:"ai",           icon:"⟡", title:"AI-native ops",             color:"#6D28D9" },
+      { id:"stakeholders", icon:"☆", title:"Who you serve",             color:"#BE185D" },
+      { id:"thirty",       icon:"✓", title:"Your first 30 days",        color:"#0369A1" },
+      { id:"quiz",         icon:"?", title:"Knowledge check",           color:"#0369A1" },
+    ];
+
+    // ── LEARNING PATHS ───────────────────────────────────────────────────
+    var PATHS = [
+      { id:"new",    icon:"◆", color:"#1B2A4A", title:"I'm brand new to recruiting ops",
+        desc:"Start from the beginning — understand the function, the model, and your first 30 days.",
+        sections:["why","model","programs","roadmap","thirty","quiz"] },
+      { id:"kpis",   icon:"◇", color:"#0F766E", title:"I need a refresher on KPIs & measurement",
+        desc:"Focus on how performance is defined, who you serve, and what success looks like.",
+        sections:["kpis","stakeholders","model","quiz"] },
+      { id:"oneone", icon:"→", color:"#B45309", title:"I'm preparing for my first 1:1 with Gilbert",
+        desc:"Get up to speed on the roadmap, your programs, and the 30-day plan before your first check-in.",
+        sections:["thirty","roadmap","programs","kpis","quiz"] },
+      { id:"aipath", icon:"⟡", color:"#6D28D9", title:"I want to understand AI-native ops",
+        desc:"Deep dive into how Teleport defines and uses AI across the recruiting function.",
+        sections:["ai","model","programs","quiz"] },
+    ];
+
+    // ── APP STATE ────────────────────────────────────────────────────────
+    var screen     = "home";
+    var activePath = null;
+    var activeId   = null;
+    var checked    = {};
+    var qCurrent = 0; var qSelected = null; var qAnswers = []; var qDone = false;
+
+    // ── QUIZ DATA ────────────────────────────────────────────────────────
+    var QUESTIONS = [
+      { q:"Teleport's recruiting ops model has three pillars. What is the correct order from foundation to insight layer?",
+        options:["Analytics → Programmatic design → Operational infrastructure","Operational infrastructure → Programmatic design → Analytics","Programmatic design → Analytics → Operational infrastructure","Analytics → Operational infrastructure → Programmatic design"],
+        correct:1, explanation:"Pillar 1 (Operational infrastructure) is the foundation, Pillar 2 (Programmatic design) builds on it, Pillar 3 (Analytics) sits on top. Analytics can't work without clean infrastructure data." },
+      { q:"Which of the following is an example of an AI-integrated workflow — not just AI-assisted?",
+        options:["Claude drafts a job description and a recruiter edits it","A recruiter asks Notion AI to summarize a process doc","Ashby AI automatically surfaces fraud signals during candidate review","Gilbert uses Claude to prepare a stakeholder update"],
+        correct:2, explanation:"AI-integrated means AI is a structural component the workflow couldn't exist without. Ashby fraud detection runs automatically. The others are AI-assisted: humans initiate, AI augments, humans validate." },
+      { q:"According to Teleport's AI Use Policy, which best describes how AI tools should be used?",
+        options:["AI should make final hiring decisions to reduce human bias","Use AI tools as assistants to improve your thinking — not to do thinking on your behalf","AI should send candidate rejections automatically","AI tools are optional and tracked only for compliance"],
+        correct:1, explanation:"Policy: 'Use AI tools as assistants to improve your thinking. Do not use AI tools to do thinking on your behalf.' AI-native doesn't mean AI-autonomous." },
+      { q:"The Programs Manager owns three programs spanning six workstream areas — all within which pillar?",
+        options:["Pillar 1 — Operational infrastructure","Pillar 3 — Analytics & intelligence","Pillar 2 — Programmatic design","The cross-cutting AI Nativity program"],
+        correct:2, explanation:"The Programs Manager owns all of Pillar 2: candidate experience, documentation & enablement, and HM & interviewer enablement. The Sr. Manager retains Pillars 1 and 3." },
+      { q:"Teleport migrated its ATS from Lever to Ashby in February 2026. Which FY27 phase does that fall within?",
+        options:["Phase 2 — Scale-ready + AI-assisted workflows (May–Jul)","Phase 4 — Strategic positioning + AI optimization (Nov–Jan)","Phase 3 — Measurement + AI-integrated ops (Aug–Oct)","Phase 1 — Foundation & AI adoption (Feb–Apr)"],
+        correct:3, explanation:"ATS governance and the Ashby migration are Phase 1 deliverables. FY27 Phase 1 runs February–April 2026 — the current phase." }
+    ];
+
+    // ── QUIZ FUNCTIONS ───────────────────────────────────────────────────
+    function resetQuiz() { qCurrent=0; qSelected=null; qAnswers=[]; qDone=false; }
+
+    function renderQuiz() {
+      if (qDone) return renderScore();
+      var q = QUESTIONS[qCurrent];
+      var letters = ["A","B","C","D"];
+      var pct = Math.round((qCurrent / QUESTIONS.length) * 100);
+      var html = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">'
+        + '<div style="flex:1;height:4px;background:#eee;border-radius:2px;overflow:hidden;">'
+        + '<div style="height:100%;width:'+pct+'%;background:#0369A1;border-radius:2px;"></div></div>'
+        + '<span style="font-size:12px;color:#888;white-space:nowrap;">Question '+(qCurrent+1)+' of '+QUESTIONS.length+'</span></div>'
+        + '<p style="font-size:15px;font-weight:600;color:#1B2A4A;line-height:1.6;margin:0 0 20px;">'+q.q+'</p>';
+      q.options.forEach(function(opt, i) {
+        var bg="white"; var border="1.5px solid #e0ddd6";
+        var lBg="#f4f3ef"; var lColor="#888"; var tColor="#1B2A4A"; var cursor=qSelected===null?"pointer":"default";
+        if (qSelected!==null) {
+          if (i===qSelected && i===q.correct)      { bg="#f0fdf4"; border="1.5px solid #0F766E"; lBg="#0F766E"; lColor="white"; }
+          else if (i===qSelected && i!==q.correct) { bg="#fef2f2"; border="1.5px solid #DC2626"; lBg="#DC2626"; lColor="white"; }
+          else if (i===q.correct)                  { bg="#f0fdf4"; border="1.5px solid #0F766E"; lBg="#0F766E"; lColor="white"; }
+          else { bg="#fafafa"; tColor="#aaa"; }
+        }
+        html += '<div onclick="selectAnswer('+i+')" style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:8px;margin-bottom:8px;'+border+';background:'+bg+';cursor:'+cursor+';">'
+          + '<div style="width:24px;height:24px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;background:'+lBg+';color:'+lColor+';">'+letters[i]+'</div>'
+          + '<span style="font-size:13px;color:'+tColor+';line-height:1.5;padding-top:3px;">'+opt+'</span></div>';
+      });
+      if (qSelected!==null) {
+        var correct = qSelected===q.correct;
+        html += '<div style="margin-top:14px;padding:14px 16px;border-radius:8px;background:'+(correct?"#f0fdf4":"#fef2f2")+';border:1px solid '+(correct?"#bbf7d0":"#fecaca")+';">'
+          + '<span style="font-weight:700;color:'+(correct?"#0F766E":"#DC2626")+'">'+(correct?"Correct.":"Not quite.")+'</span>'
+          + '<span style="font-size:13px;color:#555;"> '+q.explanation+'</span></div>'
+          + '<button onclick="nextQuestion()" style="margin-top:14px;padding:10px 24px;border-radius:8px;background:#0369A1;color:white;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">'
+          + (qCurrent<QUESTIONS.length-1?"Next question":"See my results")+'</button>';
+      }
+      return html;
+    }
+
+    function renderScore() {
+      var score = qAnswers.filter(function(a){ return a.sel===a.cor; }).length;
+      var total = QUESTIONS.length;
+      var pct   = Math.round((score/total)*100);
+      var msg   = pct===100?"Perfect score!":pct>=80?"Strong result.":pct>=60?"Good start — review the explanations.":"Worth revisiting the guide before retaking.";
+      var html  = '<div style="text-align:center;margin-bottom:24px;">'
+        + '<div style="width:90px;height:90px;border-radius:50%;border:3px solid #0369A1;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px;">'
+        + '<span style="font-size:26px;font-weight:700;color:#0369A1;">'+score+'/'+total+'</span>'
+        + '<span style="font-size:11px;color:#888;">'+pct+'%</span></div>'
+        + '<p style="font-size:15px;font-weight:600;margin:0 0 4px;">'+msg+'</p>'
+        + '<p style="font-size:13px;color:#666;margin:0;">Review any misses below.</p></div>';
+      qAnswers.forEach(function(a,i) {
+        var pass=a.sel===a.cor;
+        html+='<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #eee;">'
+          +'<span style="font-size:14px;color:'+(pass?"#0F766E":"#DC2626")+';min-width:18px;">'+(pass?"✓":"✗")+'</span>'
+          +'<div style="flex:1;"><div style="font-size:12px;color:#555;line-height:1.5;">'+QUESTIONS[i].q+'</div>'
+          +(!pass?'<div style="font-size:11px;color:#DC2626;margin-top:3px;">You chose: '+QUESTIONS[i].options[a.sel]+'</div>'
+            +'<div style="font-size:11px;color:#0F766E;margin-top:2px;">Correct: '+QUESTIONS[i].options[a.cor]+'</div>':"")
+          +'</div></div>';
+      });
+      html+='<div style="text-align:center;margin-top:20px;">'
+        +'<button onclick="resetQuiz();render();" style="padding:10px 24px;border-radius:8px;background:#0369A1;color:white;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-right:8px;">Retake quiz</button>'
+        +'<button onclick="goHome()" style="padding:10px 24px;border-radius:8px;border:1.5px solid #e0ddd6;background:none;color:#666;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">Choose another path</button>'
+        +'</div>';
+      return html;
+    }
+
+    function selectAnswer(i) { if(qSelected!==null)return; qSelected=i; render(); }
+    function nextQuestion() { qAnswers.push({sel:qSelected,cor:QUESTIONS[qCurrent].correct}); qCurrent++; qSelected=null; if(qCurrent>=QUESTIONS.length)qDone=true; render(); }
+    function toggleCheck(id) { checked[id]=!checked[id]; render(); }
+
+    // ── SCREENS ──────────────────────────────────────────────────────────
+    function renderHome() {
+      var cards = PATHS.map(function(p) {
+        var sectionTags = p.sections.filter(function(id){ return id!=="quiz"; }).map(function(id){
+          var s = SECTIONS.find(function(x){ return x.id===id; });
+          return '<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:#f4f3ef;color:#888;border:1px solid #e0ddd6;margin:2px;">'+s.icon+' '+s.title+'</span>';
+        }).join("");
+        return '<div class="path-card" onclick="choosePath(\''+p.id+'\');">'
+          +'<div style="display:flex;align-items:flex-start;gap:14px;">'
+          +'<div style="width:36px;height:36px;border-radius:9px;background:'+p.color+';display:flex;align-items:center;justify-content:center;color:white;font-size:16px;flex-shrink:0;">'+p.icon+'</div>'
+          +'<div style="flex:1;">'
+          +'<div style="font-size:14px;font-weight:700;color:#1B2A4A;margin-bottom:4px;">'+p.title+'</div>'
+          +'<div style="font-size:12px;color:#666;line-height:1.5;margin-bottom:10px;">'+p.desc+'</div>'
+          +'<div style="display:flex;flex-wrap:wrap;gap:4px;">'+sectionTags
+          +'<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:#EEF2FF;color:#4338CA;border:1px solid #C7D2FE;margin:2px;">? Knowledge check</span>'
+          +'</div></div>'
+          +'<div style="font-size:20px;color:#ccc;padding-top:2px;">›</div>'
+          +'</div></div>';
+      }).join("");
+      return '<div style="margin-bottom:28px;">'
+        +'<div style="font-size:11px;font-weight:700;color:#999;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">Teleport Recruiting Operations</div>'
+        +'<h1 style="font-size:30px;font-weight:800;margin:0 0 8px;color:#1B2A4A;">Welcome to the team</h1>'
+        +'<p style="font-size:15px;color:#666;margin:0;line-height:1.6;max-width:520px;">Choose a learning path to get started. Each path takes 10–15 minutes and ends with a knowledge check.</p>'
+        +'</div>'
+        +'<div style="font-size:11px;font-weight:700;color:#999;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Select your starting point</div>'
+        +cards
+        +'<button onclick="browseAll()" style="font-size:13px;color:#aaa;background:none;border:none;cursor:pointer;font-family:inherit;padding:10px 0;text-decoration:underline;">Or browse all sections freely →</button>'
+        +'<div class="footer"><strong style="color:#1B2A4A;">Your first week:</strong> Read Operating Model v2.1 and KPI Framework v4 in Notion. Get access to Ashby, Claude Enterprise, and the HM Planning Copilot. Schedule a 1:1 with Gilbert.</div>';
+    }
+
+    function renderLearning() {
+      var pathSections = activePath ? activePath.sections : SECTIONS.map(function(s){ return s.id; });
+      var s = SECTIONS.find(function(x){ return x.id===activeId; });
+
+      var progressBar = "";
+      if (activePath) {
+        var idx = pathSections.indexOf(activeId);
+        var pct = Math.round(((idx+1)/pathSections.length)*100);
+        progressBar = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:10px 14px;background:#f4f3ef;border-radius:8px;border:1px solid #e5e5e5;">'
+          +'<div style="width:8px;height:8px;border-radius:50%;background:'+activePath.color+';flex-shrink:0;"></div>'
+          +'<span style="font-size:12px;color:#555;flex:1;">'+activePath.title+'</span>'
+          +'<div style="width:80px;height:4px;background:#e0ddd6;border-radius:2px;overflow:hidden;">'
+          +'<div style="height:100%;width:'+pct+'%;background:'+activePath.color+';border-radius:2px;"></div></div>'
+          +'<span style="font-size:11px;color:#888;min-width:28px;text-align:right;">'+pct+'%</span></div>';
+      }
+
+      var navHTML = '<div style="margin-bottom:20px;line-height:2.4;">'
+        +pathSections.map(function(id){
+          var sec = SECTIONS.find(function(x){ return x.id===id; });
+          var isActive = id===activeId;
+          return '<button class="nav-btn'+(isActive?" active":"")+'" onclick="setSection(\''+id+'\')"'
+            +' style="'+(isActive?"border-color:"+sec.color+";color:"+sec.color+";background:"+sec.color+"14;":"")+'">'+sec.icon+' '+sec.title+'</button>';
+        }).join("")
+        +'<button onclick="goHome()" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:8px;border:1.5px solid #e0ddd6;background:none;color:#aaa;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;margin:3px;">← Paths</button>'
+        +'</div>';
+
+      var body = activeId==="quiz" ? renderQuiz()
+               : typeof CONTENT[activeId]==="function" ? CONTENT[activeId]()
+               : CONTENT[activeId];
+
+      var nextBtn = "";
+      if (activePath) {
+        var curIdx = pathSections.indexOf(activeId);
+        var nextId = pathSections[curIdx+1];
+        if (nextId) {
+          var nextSec = SECTIONS.find(function(x){ return x.id===nextId; });
+          nextBtn = '<div style="margin-top:16px;text-align:right;">'
+            +'<button onclick="setSection(\''+nextId+'\')" style="padding:10px 22px;border-radius:8px;background:'+activePath.color+';color:white;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">'
+            +'Next: '+nextSec.title+' →</button></div>';
+        }
+      }
+
+      return progressBar+navHTML
+        +'<div class="section-card">'
+        +'<div class="section-header">'
+        +'<div class="section-icon" style="background:'+s.color+';">'+s.icon+'</div>'
+        +'<h2 style="font-size:20px;font-weight:800;margin:0;color:'+s.color+';">'+s.title+'</h2>'
+        +'</div>'+body+nextBtn+'</div>';
+    }
+
+    // ── NAVIGATION ───────────────────────────────────────────────────────
+    function choosePath(pathId) {
+      activePath = PATHS.find(function(p){ return p.id===pathId; });
+      activeId   = activePath.sections[0];
+      screen     = "learning";
+      resetQuiz();
+      render();
+    }
+    function browseAll() { activePath=null; activeId="why"; screen="learning"; render(); }
+    function goHome()    { screen="home"; render(); }
+    function setSection(id) { if(id==="quiz"&&activeId!=="quiz") resetQuiz(); activeId=id; render(); }
+
+    // ── CONTENT ──────────────────────────────────────────────────────────
+    var CONTENT = {
+      why: '<p style="font-size:15px;line-height:1.7;color:#3a3a3a;margin-bottom:16px;">Recruiting operations turns recruiting from a reactive, relationship-driven function into a <strong>measurable system</strong> that can be diagnosed, tuned, and scaled.</p>'
+        +'<div style="background:#f4f3ef;border-radius:10px;padding:20px;margin-bottom:16px;">'
+        +'<p style="font-size:11px;font-weight:700;color:#1B2A4A;margin-bottom:12px;letter-spacing:0.5px;text-transform:uppercase;">The context at Teleport</p>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'
+        +[["11 people","on the recruiting team (1 Director, 1 Sr. Ops Manager, 8 recruiters, 1 sourcer)"],["~34 open reqs","staying flat at 30–45 at any given time"],["~35 hires/qtr","with 90 additional headcount planned for FY27"],["Ashby ATS","migrated from Lever in Feb 2026 — governance built from scratch"]].map(function(d){return'<div style="background:white;border-radius:8px;padding:14px;"><div style="font-size:16px;font-weight:700;color:#1B2A4A;">'+d[0]+'</div><div style="font-size:12px;color:#666;margin-top:4px;">'+d[1]+'</div></div>';}).join("")
+        +'</div></div>'
+        +'<p style="font-size:13px;color:#777;font-style:italic;">Without this function: data quality degrades, each recruiter builds workarounds, HMs get inconsistent experiences, and leadership can\'t trust pipeline numbers.</p>',
+
+      model: '<p style="font-size:14px;line-height:1.7;color:#3a3a3a;margin-bottom:20px;">Everything maps to three pillars that build on each other. The pillars are <strong>stacked, not parallel</strong> — analytics can\'t work without clean data from infrastructure.</p>'
+        +'<div style="border-radius:10px;overflow:hidden;border:1px solid #eee;">'
+        +[{n:"3",name:"Analytics & intelligence",sub:"Insight layer",bg:"#E6F1FB",accent:"#1B5EA8",owner:"Sr. Manager (Gilbert)",items:"Executive dashboards, diagnostic analysis, predictive modeling, data governance, AI adoption measurement"},{n:"2",name:"Programmatic design",sub:"Experience layer",bg:"#E1F5EE",accent:"#1B8C5A",owner:"Programs Manager (future hire)",items:"Documentation, candidate experience, employer brand, referrals, training & AI fluency, HM/interviewer enablement"},{n:"1",name:"Operational infrastructure",sub:"Foundation layer",bg:"#F4F3EF",accent:"#1B2A4A",owner:"Sr. Manager (Gilbert)",items:"ATS governance, integrations, headcount management, compliance, fraud detection, vendor rationalization"}].map(function(p){return'<div class="pillar" style="background:'+p.bg+';border-left:4px solid '+p.accent+';"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><span style="font-size:11px;font-weight:700;color:'+p.accent+';letter-spacing:0.5px;">PILLAR '+p.n+'</span><div style="font-size:16px;font-weight:700;color:'+p.accent+';margin-top:2px;">'+p.name+'</div><div style="font-size:11px;color:#888;margin-top:2px;">'+p.sub+'</div></div><span style="font-size:11px;background:rgba(255,255,255,0.7);padding:4px 10px;border-radius:20px;color:'+p.accent+';font-weight:600;white-space:nowrap;">'+p.owner+'</span></div><div style="font-size:12px;color:#555;margin-top:8px;line-height:1.6;">'+p.items+'</div></div>';}).join("")
+        +'</div>'
+        +'<div style="margin-top:16px;padding:14px;background:#FAEEDA;border-radius:8px;font-size:13px;color:#633806;"><strong>Two cross-cutting functions</strong> span all pillars: request management and AI-native operations.</div>',
+
+      programs: '<p style="font-size:14px;line-height:1.7;color:#3a3a3a;margin-bottom:16px;">Recruiting operations manages 10 programs. The <strong>Programs Manager owns 3 programs</strong> (all Pillar 2). The Sr. Manager retains Pillars 1 and 3.</p>'
+        +[{n:1,name:"Ashby Foundation Setup",pillar:"P1",owner:"Sr. Mgr"},{n:2,name:"Ashby Interview & Hiring Workflow",pillar:"P1",owner:"Sr. Mgr"},{n:3,name:"Ashby Data Reconciliation & Openings",pillar:"P1",owner:"Sr. Mgr"},{n:4,name:"Candidate & Employee Experience",pillar:"P2",owner:"Prog. Mgr"},{n:5,name:"Fraud Detection & Compliance",pillar:"P1",owner:"Sr. Mgr"},{n:6,name:"Metrics, Reporting & KPIs",pillar:"P3",owner:"Sr. Mgr"},{n:7,name:"AI Nativity",pillar:"Cross",owner:"Shared"},{n:8,name:"Documentation & Enablement",pillar:"P2",owner:"Prog. Mgr"},{n:9,name:"Recruiting as a Strategic Asset",pillar:"P3",owner:"Sr. Mgr"},{n:10,name:"HM & Interviewer Enablement",pillar:"P2",owner:"Prog. Mgr"}].map(function(pg){var isPM=pg.owner==="Prog. Mgr";return'<div class="program-row" style="background:'+(isPM?"#f0f5ff":"#fafafa")+';border:1px solid '+(isPM?"#c7d7f5":"#eee")+'"><span style="font-size:11px;color:#999;width:20px;text-align:right;">'+pg.n+'</span><span style="flex:1;font-size:13px;font-weight:'+(isPM?"600":"400")+';color:'+(isPM?"#1B2A4A":"#555")+';">'+pg.name+'</span><span class="pill" style="background:'+(pg.pillar==="P2"?"#E1F5EE":pg.pillar==="P1"?"#F4F3EF":pg.pillar==="P3"?"#E6F1FB":"#FAEEDA")+';color:#555;">'+pg.pillar+'</span><span class="pill" style="background:'+(isPM?"#dbeafe":"#f0f0f0")+';color:'+(isPM?"#1e40af":"#888")+';min-width:60px;text-align:center;">'+pg.owner+'</span></div>';}).join("")
+        +'<p style="font-size:12px;color:#888;margin-top:12px;font-style:italic;">Highlighted rows = Programs Manager ownership.</p>',
+
+      roadmap: '<p style="font-size:14px;line-height:1.7;color:#3a3a3a;margin-bottom:16px;">FY27 runs February 2026 – January 2027. Each phase has dual tracks: OPS deliverables and AI integration. Sequencing is intentional — infrastructure before programs, programs before analytics.</p>'
+        +[{ph:"P1",months:"Feb – Apr",title:"Foundation & AI adoption",focus:"ATS governance, permissions, tags, archive standards, fraud detection framework, AI baseline, HM Copilot pilot launch",status:"current",weight:"Pillar 1 heavy"},{ph:"P2",months:"May – Jul",title:"Scale-ready + AI-assisted workflows",focus:"Integration deployments (Checkr, LinkedIn RSC), system change management protocol, referral SLA framework",status:"upcoming",weight:"P1 → P2 transition"},{ph:"P3",months:"Aug – Oct",title:"Measurement + AI-integrated ops",focus:"Executive dashboards, capacity modeling, metrics suite, Programs Manager recruitment begins",status:"future",weight:"Pillar 3 activation"},{ph:"P4",months:"Nov – Jan",title:"Strategic positioning + AI optimization",focus:"Programs Manager hired and onboarded, Pillar 2 programs activated, AI playbook published, FY28 roadmap drafted",status:"future",weight:"Pillar 2 activation"}].map(function(ph){return'<div class="phase-row"><div style="min-width:54px;text-align:center;"><div style="width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;background:'+(ph.status==="current"?"#B45309":"#eee")+';color:'+(ph.status==="current"?"white":"#999")+';">'+ph.ph+'</div></div><div style="flex:1;"><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:14px;font-weight:700;color:#1B2A4A;">'+ph.title+'</span>'+(ph.status==="current"?'<span style="font-size:10px;font-weight:700;background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:10px;">YOU ARE HERE</span>':'')+'</div><div style="font-size:11px;color:#B45309;font-weight:600;margin-top:2px;">'+ph.months+' · '+ph.weight+'</div><div style="font-size:12px;color:#666;margin-top:4px;line-height:1.5;">'+ph.focus+'</div></div></div>';}).join(""),
+
+      kpis: '<p style="font-size:14px;line-height:1.7;color:#3a3a3a;margin-bottom:16px;">Performance = <strong>WHAT</strong> you accomplish (quantitative KPIs) + <strong>HOW</strong> you achieve it (behavioral competencies). Five domains.</p>'
+        +[{domain:"Systems & infrastructure",pm:"25%",desc:"ATS governance, integration uptime, config accuracy, tier-1 support"},{domain:"Process design & enablement",pm:"25%",desc:"Documentation coverage, self-service rate, adoption rates, SLA compliance",hi:true},{domain:"Data & analytics",pm:"25%",desc:"Data integrity, report delivery, pipeline accuracy, AI-generated insights"},{domain:"Strategic partnership",pm:"15%",desc:"Stakeholder satisfaction, cross-functional projects, FP&A reconciliation"},{domain:"AI-native operations",pm:"10%",desc:"AI tool usage, AI-assisted task rate, AI workflow proposals, quality governance"}].map(function(d){return'<div class="kpi-row" style="background:'+(d.hi?"#f0fdf4":"#fafafa")+';border-color:'+(d.hi?"#bbf7d0":"#eee")+'"><div style="min-width:44px;text-align:center;"><div style="font-size:18px;font-weight:800;color:#0F766E;">'+d.pm+'</div></div><div style="width:1px;height:30px;background:#ddd;"></div><div style="flex:1;"><div style="font-size:13px;font-weight:600;color:#1B2A4A;">'+d.domain+'</div><div style="font-size:11px;color:#777;margin-top:2px;">'+d.desc+'</div></div></div>';}).join("")
+        +'<div style="background:#f4f3ef;border-radius:10px;padding:16px;margin-top:12px;">'
+        +'<p style="font-size:13px;font-weight:600;color:#1B2A4A;margin-bottom:10px;">Key targets for your first year</p>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'
+        +[[">80%","Process adoption rate"],["<21 days","New recruiter onboarding ramp"],[">55%","Self-service rate"],[">80%","Interviewer feedback SLA"],["Daily","AI tool usage (company target: 100%)"],["2+/qtr","Team members trained"]].map(function(t){return'<div style="display:flex;gap:8px;align-items:baseline;"><span style="font-size:14px;font-weight:800;color:#0F766E;min-width:70px;">'+t[0]+'</span><span style="font-size:11px;color:#666;">'+t[1]+'</span></div>';}).join("")
+        +'</div></div>',
+
+      ai: '<p style="font-size:14px;line-height:1.7;color:#3a3a3a;margin-bottom:16px;">Teleport\'s FY27 company OKR is to <strong>operate as an AI-native company</strong>. In recruiting operations, we evaluate every workflow through three lenses:</p>'
+        +[{lens:"AI-assisted",bg:"#E1F5EE",accent:"#1B8C5A",desc:"Human initiates, AI augments, human validates. Example: Claude drafts documentation, you review and publish."},{lens:"AI-integrated",bg:"#EEEDFE",accent:"#6D28D9",desc:"AI is a structural workflow component the workflow couldn\'t exist without. Example: Ashby AI surfaces fraud signals. AI-powered capacity forecasting."},{lens:"What AI should not do",bg:"#FEF3C7",accent:"#92400E",desc:"Deliberate limits. AI doesn\'t make hiring decisions. AI doesn\'t send candidate communications without human review. AI doesn\'t auto-archive candidates. These are design principles."}].map(function(l){return'<div style="background:'+l.bg+';border-left:4px solid '+l.accent+';border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:10px;"><div style="font-size:13px;font-weight:700;color:'+l.accent+';">'+l.lens+'</div><div style="font-size:12px;color:#555;margin-top:6px;line-height:1.6;">'+l.desc+'</div></div>';}).join("")
+        +'<p style="font-size:13px;color:#555;line-height:1.7;margin-top:12px;"><strong>Your AI toolkit:</strong> Claude Enterprise (preferred), Ashby AI (screener, analytics), Notion AI (self-service). Policy: "Use AI tools as assistants to improve your thinking. Do not use AI tools to do thinking on your behalf."</p>',
+
+      stakeholders: '<p style="font-size:14px;line-height:1.7;color:#3a3a3a;margin-bottom:16px;">Recruiting operations delivers value to six stakeholder groups. Every metric traces back to a specific KPI.</p>'
+        +[{who:"Recruiters",what:"Reduced admin, standardized workflows, AI self-service, streamlined processes",metric:"Self-service >60% · Onboarding <21 days · Ticket resolution <2 days"},{who:"Hiring managers",what:"Structured decisions, Ashby onboarding, feedback loops, HM Planning Copilot",metric:"HM satisfaction >4.0 · Onboarding completion >90%"},{who:"Interviewers",what:"Clear expectations, calibrated scorecards, training, timely reminders",metric:"Feedback SLA <24hrs >85%"},{who:"Leadership",what:"Trusted data, pipeline visibility, predictive models, AI adoption metrics",metric:"Dashboard delivery weekly · Zero headcount discrepancies"},{who:"Candidates",what:"Fair, consistent, efficient experience with timely communication",metric:"CX NPS · Rejection SLA <3 days · Time-to-schedule"},{who:"Organization",what:"Scalable recruiting engine at 35+ hires/quarter, AI-native OKR contribution",metric:"Roadmap completion >85% · AI workflows: 10+ by Q4"}].map(function(s,i){return'<div class="stakeholder-row" style="background:'+(i%2===0?"#fdf2f8":"#fafafa")+'"><div style="font-size:13px;font-weight:700;color:#BE185D;">'+s.who+'</div><div style="font-size:12px;color:#555;margin-top:4px;">'+s.what+'</div><div style="font-size:11px;color:#999;margin-top:4px;font-family:monospace;">'+s.metric+'</div></div>';}).join(""),
+
+      thirty: function() {
+        var weeks=[
+          {label:"Week 1 — Orient",items:[{id:"t1",text:"Get access to Ashby, Notion, Claude Enterprise, and Rippling",tag:"Systems"},{id:"t2",text:"Read Operating Model v2.1 and KPI Framework v4 in Notion",tag:"Reading"},{id:"t3",text:"Schedule 1:1 with Gilbert — review 30/60/90 plan",tag:"Meeting"},{id:"t4",text:"Attend one live recruiting team standup",tag:"Team"}]},
+          {label:"Week 2 — Learn the systems",items:[{id:"t5",text:"Complete Ashby onboarding walkthrough with Gilbert or Tommy",tag:"Ashby"},{id:"t6",text:"Review open headcount list and how reqs are structured",tag:"Data"},{id:"t7",text:"Shadow one full interview scheduling workflow end-to-end",tag:"Shadow"},{id:"t8",text:"Read the fraud detection framework and compliance checklist",tag:"Reading"}]},
+          {label:"Week 3 — Go deeper on your programs",items:[{id:"t9",text:"Map your 3 programs and 6 workstream areas to current status",tag:"Programs"},{id:"t10",text:"Identify the top 2 documentation gaps in your owned areas",tag:"Docs"},{id:"t11",text:"Review Notion process docs for your programs and flag outdates",tag:"Notion"},{id:"t12",text:"Set up Claude Enterprise — daily use starts now",tag:"AI"}]},
+          {label:"Week 4 — Start contributing",items:[{id:"t13",text:"Draft a 30-day summary: what you learned, gaps spotted, early ideas",tag:"Deliverable"},{id:"t14",text:"Identify one process improvement or doc you can own",tag:"Initiative"},{id:"t15",text:"Attend an HM or interviewer-facing touchpoint",tag:"Shadow"},{id:"t16",text:"Complete first 1:1 check-in against your 30/60/90 targets",tag:"Meeting"}]}
+        ];
+        var total=0; var done=0;
+        weeks.forEach(function(w){ total+=w.items.length; w.items.forEach(function(i){ if(checked[i.id])done++; }); });
+        var pct=Math.round((done/total)*100);
+        var html='<p style="font-size:14px;line-height:1.7;color:#3a3a3a;margin-bottom:16px;">Check items off as you complete them. Your first 30 days cover orienting, learning the systems, deepening on your programs, and making your first contribution.</p>'
+          +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:12px 16px;background:#f4f3ef;border-radius:8px;">'
+          +'<div style="flex:1;height:6px;background:#e0ddd6;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:#0369A1;border-radius:3px;"></div></div>'
+          +'<span style="font-size:13px;font-weight:600;color:#0369A1;min-width:72px;text-align:right;">'+done+' of '+total+' done</span></div>';
+        weeks.forEach(function(w){
+          html+='<div style="font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:#999;margin:14px 0 6px;">'+w.label+'</div>';
+          w.items.forEach(function(item){
+            var d=!!checked[item.id];
+            html+='<div class="check-item'+(d?" done":"")+'" onclick="toggleCheck(\''+item.id+'\')">'
+              +'<div class="check-box">'+(d?"✓":"")+'</div>'
+              +'<div style="flex:1;"><span style="font-size:13px;text-decoration:'+(d?"line-through":"none")+';">'+item.text+'</span>'
+              +'<span class="pill" style="margin-left:8px;background:#f4f3ef;color:#888;">'+item.tag+'</span></div></div>';
+          });
+        });
+        return html;
+      }
+    };
+
+    // ── MAIN RENDER ──────────────────────────────────────────────────────
+    function render() {
+      document.getElementById("app").innerHTML =
+        screen === "home" ? renderHome() : renderLearning();
+    }
+
+    render();
+  </script>
+</body>
+</html>
